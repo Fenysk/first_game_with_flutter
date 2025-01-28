@@ -1,15 +1,26 @@
+import 'package:first_flutter_flame_app/my_first_game/green_game.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-class Player extends CircleComponent {
-  Player({
-    required super.position,
-    required super.radius,
-    Color color = Colors.white,
-  }) : super(
-          anchor: Anchor.center,
-          paint: Paint()
-            ..color = color
-            ..style = PaintingStyle.fill,
-        );
+class Player extends SpriteComponent with HasGameRef<GreenGame> {
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load('mario.png');
+    size = Vector2.all(100);
+    position = Vector2(0, 0);
+    anchor = Anchor.center;
+  }
+
+  @override
+  void update(double deltaTime) {
+    super.update(deltaTime);
+
+    final bottomOfScreen = (gameRef.size.y / 2) - (size.y / 2);
+
+    double newY = position.y + (deltaTime * 100);
+
+    if (newY > bottomOfScreen) newY = bottomOfScreen;
+
+    position.y = newY;
+  }
 }
