@@ -7,7 +7,7 @@ class Player extends SpriteComponent with HasGameRef<GreenGame> {
   Future<void> onLoad() async {
     sprite = await Sprite.load('mario.png');
     size = Vector2.all(100);
-    position = Vector2(0, 0);
+    position = Vector2(0, -200);
     anchor = Anchor.center;
   }
 
@@ -22,5 +22,10 @@ class Player extends SpriteComponent with HasGameRef<GreenGame> {
     if (newY > bottomOfScreen) newY = bottomOfScreen;
 
     position.y = newY;
+  }
+
+  void move(double deltaX) {
+    double newX = position.x += deltaX;
+    position.x = newX;
   }
 }

@@ -1,10 +1,12 @@
 import 'package:first_flutter_flame_app/my_first_game/config/game_config.dart';
 import 'package:first_flutter_flame_app/my_first_game/green_world.dart';
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/services/keyboard_key.g.dart';
 
-class GreenGame extends FlameGame {
+class GreenGame extends FlameGame<GreenWorld> with HorizontalDragDetector, KeyboardEvents {
   GreenGame({
     super.children,
   }) : super(
@@ -17,4 +19,31 @@ class GreenGame extends FlameGame {
 
   @override
   Color backgroundColor() => Colors.green;
+
+  @override
+  void onHorizontalDragUpdate(DragUpdateInfo info) {
+    super.onHorizontalDragUpdate(info);
+
+    world.player.move(info.delta.global.x);
+  }
+
+  @override
+  KeyEventResult onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    const double moveSpeed = 55.0;
+
+    final bool isLeftPressed = keysPressed.contains(LogicalKeyboardKey.arrowLeft);
+    final bool isRightPressed = keysPressed.contains(LogicalKeyboardKey.arrowRight);
+
+    if (isLeftPressed && isRightPressed) {
+      return KeyEventResult.ignored;
+    } else if (isLeftPressed) {
+      world.player.move(-moveSpeed);
+      return KeyEventResult.handled;
+    } else if (isRightPressed) {
+      world.player.move(moveSpeed);
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
+  }
 }
